@@ -29,7 +29,7 @@ def crud():
             cursor.execute(query, ('%' + search_term + '%',))
             results = cursor.fetchall()
             conn.close()
-            return render_template('crud.html', results=results, entity=entity)
+            return render_template('crud.html', message= "Results:", results=results, entity=entity)
         
         elif operation == 'add':
             if entity == 'user':
@@ -65,7 +65,7 @@ def crud():
                 cursor.execute(query, (cat_name, cat_description))
             conn.commit()
             conn.close()
-            return redirect(url_for('crud'))
+            return render_template('crud.html', message=f"Added the new {entity}")
     
     return render_template('crud.html')
 
@@ -77,7 +77,7 @@ def delete(entity, id):
     cursor.execute(query, (id,))
     conn.commit()
     conn.close()
-    return redirect(url_for('crud'))
+    return render_template('crud.html', message=f"Deleted the {entity} with id {id}")
 
 @app.route('/update/<entity>/<id>/', methods=['POST'])
 def update(entity, id):
@@ -116,7 +116,7 @@ def update(entity, id):
         cursor.execute(query, (cat_name, cat_description, id))
     conn.commit()
     conn.close()
-    return redirect(url_for('crud'))
+    return render_template('crud.html', message=f"Updated the {entity} with id {id}")
 
 if __name__ == '__main__':
     # Establish a connection to the SQL Server

@@ -152,6 +152,9 @@
             </div>
         </form>
         <div id="results">
+            {%if message %}
+            <p><strong>{{ message }}</strong></p>
+            {%endif%}
             {% if results %}
                 <ul>
                     {% for item in results %}
