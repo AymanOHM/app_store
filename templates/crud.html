@@ -157,11 +157,15 @@
                     {% for item in results %}
                         <li>
                             {{ item }}
-                            <button onclick="showUpdateForm('{{ item.id }}', '{{ entity }}')">Update</button>
-                            <button onclick="confirmDelete('{{ item.id }}', '{{ entity }}')">Delete</button>
-                            <div id="update-form-container-{{ item.id }}" style="display:none;">
-                                <form action="{{ url_for('update', entity=entity, id=item.id) }}" method="post">
+                            <button onclick="showUpdateForm('{{ item.app_id }}', '{{ entity }}')">Update</button>
+                            <button onclick="confirmDelete('{{ item.app_id }}', '{{ entity }}')">Delete</button>
+                            <div id="update-form-container-{{ item.app_id }}" style="display:none;">
+                                <form action="{{ url_for('update', entity=entity, id=item.app_id) }}" method="POST">
                                     {% if entity == 'user' %}
+                                        <div class="form-group">
+                                            <label for="name">Name:</label>
+                                            <input type="text" id="name" name="name" value="{{ item.name }}" required>
+                                        </div>
                                         <div class="form-group">
                                             <label for="name">Name:</label>
                                             <input type="text" id="name" name="name" value="{{ item.name }}" required>

@@ -3,18 +3,24 @@ import pyodbc
 
 app = Flask(__name__)
 
-# Database Connection
-DRIVER_NAME = 'ODBC Driver 17 for SQL Server'
-SERVER_NAME = r'(LocalDB)\MSSQLLocalDB'
-DATABASE_NAME = 'appstore'
-conn = pyodbc.connect(F'DRIVER={{{DRIVER_NAME}}};SERVER={SERVER_NAME};DATABASE={DATABASE_NAME};')
-print("Connected to the database successfully")
+def get_db_connection():
+    # Database Connection
+    DRIVER_NAME = 'ODBC Driver 17 for SQL Server'
+    SERVER_NAME = r'(LocalDB)\MSSQLLocalDB'
+    DATABASE_NAME = 'appstore'
+    conn = pyodbc.connect(F'DRIVER={{{DRIVER_NAME}}};SERVER={SERVER_NAME};DATABASE={DATABASE_NAME};')
+    return conn
 
-@app.route('/crud', methods=['POST', 'GET'])
+@app.route('/')
+def home():
+    return "<h1> Welcome to the App Store </h1>"
+
+@app.route('/crud', methods=['GET', 'POST'])
 def crud():
     if request.method == 'POST':
         operation = request.form['operation']
         entity = request.form['entity']
+        conn = get_db_connection()
         cursor = conn.cursor()
         
         if operation == 'search':
@@ -22,6 +28,7 @@ def crud():
             query = f"SELECT * FROM {entity}s WHERE name LIKE ?"
             cursor.execute(query, ('%' + search_term + '%',))
             results = cursor.fetchall()
+            conn.close()
             return render_template('crud.html', results=results, entity=entity)
         
         elif operation == 'add':
@@ -57,22 +64,24 @@ def crud():
                 query = "INSERT INTO categories (cat_name, cat_description) VALUES (?, ?)"
                 cursor.execute(query, (cat_name, cat_description))
             conn.commit()
+            conn.close()
             return redirect(url_for('crud'))
     
     return render_template('crud.html')
 
 @app.route('/delete/<entity>/<id>', methods=['GET'])
 def delete(entity, id):
-    print("Into Delete")
+    conn = get_db_connection()
     cursor = conn.cursor()
-    query = f"DELETE FROM {entity}s WHERE id = ?"
+    query = f"DELETE FROM {entity}s WHERE app_id = ?"
     cursor.execute(query, (id,))
     conn.commit()
+    conn.close()
     return redirect(url_for('crud'))
 
-@app.route('/update', methods=['POST'])
+@app.route('/update/<entity>/<id>/', methods=['POST'])
 def update(entity, id):
-    print("Into Update")
+    conn = get_db_connection()
     cursor = conn.cursor()
     if entity == 'user':
         name = request.form['name']
@@ -106,6 +115,7 @@ def update(entity, id):
         query = "UPDATE categories SET cat_name = ?, cat_description = ? WHERE cat_name = ?"
         cursor.execute(query, (cat_name, cat_description, id))
     conn.commit()
+    conn.close()
     return redirect(url_for('crud'))
 
 if __name__ == '__main__':
