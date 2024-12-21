@@ -13,7 +13,7 @@ def get_db_connection():
 
 @app.route('/')
 def home():
-    return "<h1> Welcome to the App Store </h1>"
+    return render_template('home.html')
 
 @app.route('/crud', methods=['GET', 'POST'])
 def crud():
