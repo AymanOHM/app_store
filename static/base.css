@@ -18,3 +18,33 @@ button:hover {
 header button {
     all: unset;
 }
+
+.navbar.navbar-expand-lg.navbar-light.bg-light {
+    background-color: #f8f9fa !important;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.navbar.navbar-expand-lg.navbar-light.bg-light a {
+    color: #000 !important;
+    margin-right: 15px;
+}
+
+.navbar.navbar-expand-lg.navbar-light.bg-light a:hover {
+    color: #007bff !important;
+}
+nav {
+    background-color: #007bff;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 15px;
+}
+
+nav a:hover {
+    color: #007bff;
+}
