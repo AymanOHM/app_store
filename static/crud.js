@@ -1,4 +1,4 @@
-function showForm() {
+function showForm(categories = []) {
     const operation = document.querySelector('input[name="operation"]:checked').value;
     const entity = document.querySelector('input[name="entity"]:checked').value;
     const formContainer = document.getElementById('form-container');
@@ -8,7 +8,7 @@ function showForm() {
         formContainer.innerHTML = `
             <div class="form-group">
                 <label for="search">Search ${entity}:</label>
-                <input type="text" id="search" name="search" required>
+                <input type="text" id="search" name="search">
             </div>
         `;
     } else if (operation === 'add') {
@@ -63,6 +63,10 @@ function showForm() {
                 <div class="form-group">
                     <label for="name">Name:</label>
                     <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <input type="text" id="category" name="category" required>
                 </div>
                 <div class="form-group">
                     <label for="app_version">App Version:</label>

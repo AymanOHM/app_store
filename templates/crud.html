@@ -48,10 +48,10 @@
                 {% for item in results %}
                     <li>
                         {{ item }}
-                        <button onclick="showUpdateForm('{{ item.app_id }}', '{{ entity }}')">Update</button>
-                        <button onclick="confirmDelete('{{ item.app_id }}', '{{ entity }}')">Delete</button>
-                        <div id="update-form-container-{{ item.app_id }}" style="display:none;">
-                            <form action="{{ url_for('update', entity=entity, id=item.app_id) }}" method="POST">
+                        <button onclick="showUpdateForm('{{ item[0] }}', '{{ entity }}')">Update</button>
+                        <button onclick="confirmDelete('{{ item[0] }}', '{{ entity }}')">Delete</button>
+                        <div id="update-form-container-{{ item[0] }}" style="display:none;">
+                            <form action="{{ url_for('update', entity=entity, id=item[0]) }}" method="POST">
                                 {% if entity == 'user' %}
                                     <div class="form-group">
                                         <label for="name">Name:</label>
@@ -104,9 +104,12 @@
                                         <input type="text" id="name" name="name" value="{{ item.name }}" required>
                                     </div>
                                     <div class="form-group">
+                                        <label for="category">Category:</label>
+                                        <input type="text" id="category" name="category" value="{{ item.category }}" required>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="app_version">App Version:</label>
                                         <input type="number" step="0.001" id="app_version" name="app_version" value="{{ item.app_version }}" required>
-                                    </div>
                                     <div class="form-group">
                                         <label for="price">Price:</label>
                                         <input type="number" step="0.01" id="price" name="price" value="{{ item.price }}">
