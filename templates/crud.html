@@ -104,8 +104,9 @@
                                         <input type="text" id="name" name="name" value="{{ item.name }}" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="category">Category:</label>
-                                        <input type="text" id="category" name="category" value="{{ item.category }}" required>
+                                        <label for="category-update">Category:</label>
+                                        <select id="category-update" name="category" value= "{{ item.category }}" required>
+                                        </select>
                                     </div>
                                     <div class="form-group">
                                         <label for="app_version">App Version:</label>

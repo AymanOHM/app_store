@@ -1,6 +1,6 @@
 from .database import get_db_connection
 
-def search_app(key):
+def search_app(key= ""):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -10,10 +10,10 @@ def search_app(key):
         conn.close()
         return results
     except Exception as e:
-        return f"Error when searching for app: {e}"
+        return f"Error when searching for app: \n{e}"
 
 
-def search_cat(key):
+def search_cat(key= ""):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -23,10 +23,10 @@ def search_cat(key):
         conn.close()
         return results
     except Exception as e:
-        return f"Error when searching for category: {e}"
+        return f"Error when searching for category: \n{e}"
 
 
-def search_user(key):
+def search_user(key= ""):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -36,10 +36,10 @@ def search_user(key):
         conn.close()
         return results
     except Exception as e:
-        return f"Error when searching for user: {e}"
+        return f"Error when searching for user: \n{e}"
 
 
-def search_dev(key):
+def search_dev(key= ""):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -49,4 +49,4 @@ def search_dev(key):
         conn.close()
         return results
     except Exception as e:
-        return f"Error when searching for developer: {e}"
+        return f"Error when searching for developer: \n{e}"

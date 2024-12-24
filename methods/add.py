@@ -16,9 +16,9 @@ def add_app(form):
         cursor.execute(query)
         cursor.commit()
         conn.close()
-        return f"Successfully added app '{name}' with id '{app_version}' to the database"
+        return f"Successfully added app '{name}' with Version {app_version} to the database"
     except Exception as e:
-        return f"Error when adding app: {e}"
+        return f"Error when adding app: \n{e}"
 
 
 def add_category(form):
@@ -33,7 +33,7 @@ def add_category(form):
         conn.close()
         return f"Successfully added category '{cat_name}' to the database"
     except Exception as e:
-        return f"Error when adding category: {e}"
+        return f"Error when adding category: \n{e}"
 
 
 def add_dev(form):
@@ -51,7 +51,7 @@ def add_dev(form):
         conn.close()
         return f"Successfully added developer '{name}' to the database"
     except Exception as e:
-        return f"Error when adding developer: {e}"
+        return f"Error when adding developer: \n{e}"
 
 
 def add_user(form):
@@ -70,4 +70,4 @@ def add_user(form):
         conn.close()
         return f"Successfully added user '{name}' to the database"
     except Exception as e:
-        return f"Error when adding user: {e}"
+        return f"Error when adding user: \n{e}"

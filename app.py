@@ -6,6 +6,7 @@ from methods import update_app, update_category, update_dev, update_user
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -26,7 +27,8 @@ def crud():
             }
             search_term = request.form['search']
             results = search[entity](search_term)
-            message = f"Results for {entity.capitalize()} with '{search_term}':" if results else f"No results for {entity.capitalize()} with '{search_term}'"
+            message = f"Results for {entity.capitalize()} with '{search_term}':" if results else f"No results for {
+                entity.capitalize()} with '{search_term}'"
             return render_template('crud.html', message=message, results=results, entity=entity)
 
         elif operation == 'add':
@@ -38,8 +40,8 @@ def crud():
             }
             message = adder[entity](request.form)
 
-            return render_template('crud.html', message= message)
-    
+            return render_template('crud.html', message=message)
+
     return render_template('crud.html')
 
 
@@ -51,9 +53,8 @@ def delete(entity, id):
         'developer': delete_dev,
         'user': delete_user,
     }
-    print(id)
     message = delete_functions[entity](id)
-    return render_template('crud.html', message= message)
+    return render_template('crud.html', message=message)
 
 
 @app.route('/update/<entity>/<id>/', methods=['POST'])
@@ -65,7 +66,19 @@ def update(entity, id):
         'user': update_user,
     }
     message = update_functions[entity](id, request.form)
-    return render_template('crud.html', message= message)
+    return render_template('crud.html', message=message)
+
+
+# API Endpoints
+@app.route('/api/categories', methods=['GET'])
+def api_categories():
+    categories = [item[0] for item in search_cat('')]
+    return categories
+
+@app.route('/api/get_app_cat', methods=['GET'])
+def api_get_app_cat():
+    categories = [item[0] for item in search_cat('')]
+    return categories
 
 
 if __name__ == '__main__':

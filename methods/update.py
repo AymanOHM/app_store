@@ -19,7 +19,7 @@ def update_app(id, form):
         conn.close()
         return f"Successfully updated app '{name}' with id {id}"
     except Exception as e:
-        return f"Error when updating app: {e}"
+        return f"Error when updating app: \n{e}"
 
 
 def update_category(id, form):
@@ -34,7 +34,7 @@ def update_category(id, form):
         conn.close()
         return f"Successfully updated category '{cat_name}'"
     except Exception as e:
-        return f"Error when updating category: {e}"
+        return f"Error when updating category: \n{e}"
 
 
 def update_dev(id, form):
@@ -52,7 +52,7 @@ def update_dev(id, form):
         conn.close()
         return f"Successfully updated developer '{name}'"
     except Exception as e:
-        return f"Error when updating developer: {e}"
+        return f"Error when updating developer: \n{e}"
 
 
 def update_user(id, form):
@@ -71,4 +71,4 @@ def update_user(id, form):
         conn.close()
         return f"Successfully updated user '{name}'"
     except Exception as e:
-        return f"Error when updating user: {e}"
+        return f"Error when updating user: \n{e}"

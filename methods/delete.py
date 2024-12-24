@@ -10,7 +10,7 @@ def delete_app(id):
         conn.close()
         return f"Successfully deleted app with id '{id}'"
     except Exception as e:
-        return f"Error when deleting app: {e}"
+        return f"Error when deleting app: \n{e}"
 
 
 def delete_category(id):
@@ -23,7 +23,7 @@ def delete_category(id):
         conn.close()
         return f"Successfully deleted category with id '{id}'"
     except Exception as e:
-        return f"Error when deleting category: {e}"
+        return f"Error when deleting category: \n{e}"
 
 
 def delete_dev(id):
@@ -36,7 +36,7 @@ def delete_dev(id):
         conn.close()
         return f"Successfully deleted developer with id '{id}'"
     except Exception as e:
-        return f"Error when deleting developer: {e}"
+        return f"Error when deleting developer: \n{e}"
 
 
 def delete_user(id):
@@ -49,4 +49,4 @@ def delete_user(id):
         conn.close()
         return f"Successfully deleted user with id '{id}'"
     except Exception as e:
-        return f"Error when deleting user: {e}"
+        return f"Error when deleting user: \n{e}"
