@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}User Home{% endblock title %}
+
+{% block body %}
+<div class="container mt-5">
+    <form action="{{ url_for('user_home') }}" method="post" class="mb-4">
+        <div class="input-group">
+            <input type="text" class="form-control" name="search" placeholder="Search apps...">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </div>
+        <div class="form-group mt-3">
+            <select name="category" class="form-control" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category.cat_name }}" {% if selected_category == category.cat_name %}selected{% endif %}>
+                    {{ category.cat_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+
+    <div class="row">
+        {% for app in apps %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ app.icon_path }}" class="card-img-top" alt="{{ app.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ app.name }}</h5>
+                    <p class="card-text">${{ app.price }}</p>
+                    <a href="{{ url_for('view_app', app_id=app.app_id) }}" class="btn btn-primary">View Details</a>
+                    <button onclick="addToCart('{{ app.app_id }}')" class="btn btn-success">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function addToCart(appId) {
+    fetch('/add_to_cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            app_id: appId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Added to cart!');
+        } else {
+            alert('Error adding to cart');
+        }
+    });
+}
+</script>
+{% endblock body %}

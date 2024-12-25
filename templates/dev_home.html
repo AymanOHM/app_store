@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Developer Home{% endblock title %}
+
+{% block scripts %}
+<script>
+    function showAddForm() {
+        document.getElementById('add-form').style.display = 'block';
+    }
+
+    function showUpdateForm(appId) {
+        document.getElementById('update-form-' + appId).style.display = 'block';
+    }
+
+    function deleteApp(appId) {
+        if (confirm('Are you sure you want to delete this app?')) {
+            window.location.href = '/delete_app/' + appId;
+        }
+    }
+</script>
+{% endblock scripts %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>My Apps</h1>
+    <button onclick="showAddForm()" class="btn btn-primary mb-4">Add New App</button>
+
+    <div id="add-form" style="display: none;" class="card mb-4">
+        <div class="card-body">
+            <h3>Add New App</h3>
+            <form action="{{ url_for('add_app') }}" method="post">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="app_version">Version:</label>
+                    <input type="number" step="0.001" class="form-control" id="app_version" name="app_version" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+                </div>
+                <div class="form-group">
+                    <label for="app_description">Description:</label>
+                    <textarea class="form-control" id="app_description" name="app_description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="app_path">App Path:</label>
+                    <input type="text" class="form-control" id="app_path" name="app_path" required>
+                </div>
+                <div class="form-group">
+                    <label for="icon_path">Icon Path:</label>
+                    <input type="text" class="form-control" id="icon_path" name="icon_path" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add App</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for app in apps %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">{{ app.name }}</h4>
+                    <p class="card-text">Version: {{ app.app_version }}</p>
+                    <p class="card-text">Price: ${{ app.price }}</p>
+                    <p class="card-text">{{ app.app_description }}</p>
+                    
+                    <button onclick="showUpdateForm('{{ app.app_id }}')" class="btn btn-warning mr-2">Update</button>
+                    <button onclick="deleteApp('{{ app.app_id }}')" class="btn btn-danger">Delete</button>
+
+                    <div id="update-form-{{ app.app_id }}" style="display: none;" class="mt-3">
+                        <form action="{{ url_for('update_app', app_id=app.app_id) }}" method="post">
+                            <div class="form-group">
+                                <label for="name-{{ app.app_id }}">Name:</label>
+                                <input type="text" class="form-control" id="name-{{ app.app_id }}" name="name" value="{{ app.name }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="app_version-{{ app.app_id }}">Version:</label>
+                                <input type="number" step="0.001" class="form-control" id="app_version-{{ app.app_id }}" name="app_version" value="{{ app.app_version }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="price-{{ app.app_id }}">Price:</label>
+                                <input type="number" step="0.01" class="form-control" id="price-{{ app.app_id }}" name="price" value="{{ app.price }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="app_description-{{ app.app_id }}">Description:</label>
+                                <textarea class="form-control" id="app_description-{{ app.app_id }}" name="app_description" required>{{ app.app_description }}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="app_path-{{ app.app_id }}">App Path:</label>
+                                <input type="text" class="form-control" id="app_path-{{ app.app_id }}" name="app_path" value="{{ app.app_path }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="icon_path-{{ app.app_id }}">Icon Path:</label>
+                                <input type="text" class="form-control" id="icon_path-{{ app.app_id }}" name="icon_path" value="{{ app.icon_path }}" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update App</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock body %}

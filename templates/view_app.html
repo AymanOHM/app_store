@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}{{ app.name }}{% endblock title %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <img src="{{ app.icon_path }}" class="card-img-top" alt="{{ app.name }}">
+                <div class="card-body">
+                    <h1 class="card-title">{{ app.name }}</h1>
+                    <p class="card-text">Version: {{ app.app_version }}</p>
+                    <p class="card-text">Price: ${{ app.price }}</p>
+                    <p class="card-text">Description: {{ app.app_description }}</p>
+                    <p class="card-text">Developer: {{ app.dev_name }}</p>
+                    <button onclick="addToCart('{{ app.app_id }}')" class="btn btn-success btn-lg">Add to Cart</button>
+                </div>
+            </div>
+
+            <h2 class="mt-4">Reviews</h2>
+            {% for review in reviews %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Rating: {{ review.rating }}/5</h5>
+                    <p class="card-text">{{ review.review_text }}</p>
+                    <p class="card-text"><small class="text-muted">By {{ review.user_name }} on {{ review.review_date }}</small></p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+function addToCart(appId) {
+    fetch('/add_to_cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            app_id: appId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Added to cart!');
+        } else {
+            alert('Error adding to cart');
+        }
+    });
+}
+</script>
+{% endblock body %}
