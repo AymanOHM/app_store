@@ -8,7 +8,7 @@ function showForm() {
         formContainer.innerHTML = `
             <div class="form-group">
                 <label for="search">Search ${entity}:</label>
-                <input type="text" id="search" name="search" required>
+                <input type="text" id="search" name="search">
             </div>
         `;
     } else if (operation === 'add') {
@@ -69,6 +69,10 @@ function showForm() {
                     <input type="number" step="0.001" id="app_version" name="app_version" required>
                 </div>
                 <div class="form-group">
+                    <label for="category_select">Category:</label>
+                    <select id="category_select" name="category" required></select>
+                </div>
+                <div class="form-group">
                     <label for="price">Price:</label>
                     <input type="number" step="0.01" id="price" name="price">
                 </div>
@@ -89,6 +93,21 @@ function showForm() {
                     <input type="text" id="icon_path" name="icon_path" required>
                 </div>
             `;
+
+            fetch('/api/categories')
+            .then(response => response.json())
+            .then(categories => {
+                const categorySelect = document.getElementById('category_select');
+
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category;
+                    option.textContent = category;
+                    categorySelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching categories:', error));
+        
         } else if (entity === 'category') {
             formContainer.innerHTML = `
                 <div class="form-group">
@@ -104,8 +123,28 @@ function showForm() {
     }
 }
 
-function showUpdateForm(id, entity) {
+function showUpdateForm(id, entity, category = null) {
     const updateFormContainer = document.getElementById(`update-form-container-${id}`);
+    
+    // todo: Get the category of the item of the given ID and make its category the default selected option
+    if (entity === 'app') {
+        fetch('/api/categories')
+        .then(response => response.json())
+        .then(categories => {
+            const categorySelect = updateFormContainer.querySelector('#category-update');
+            console.log(categorySelect);
+            
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categorySelect.appendChild(option);
+                console.log(category);
+            });
+        })
+        .catch(error => console.error('Error fetching categories:', error));
+    }
+    
     updateFormContainer.style.display = 'block';
 }
 
