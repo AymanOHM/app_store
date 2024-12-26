@@ -58,7 +58,7 @@ function addToCart(appId) {
         if (data.success) {
             alert('Added to cart!');
         } else {
-            alert('Error adding to cart');
+            alert(data.error);
         }
     });
 }

@@ -7,7 +7,7 @@ from methods import get_user_id, get_dev_id, user_signup, dev_signup
 from methods import dev_add_app, dev_update_app, dev_delete_app, dev_show_apps
 from methods.user_methods import user_search_app_with_cat, user_balance
 from methods.viewapp_methods import app_get, app_get_developer
-from methods.cart_methods import cart_add_app, cart_show, cart_total_price
+from methods.cart_methods import cart_add_app, cart_remove_app, cart_show, cart_total_price, cart_checkout
 from random import choices
 
 app = Flask(__name__)
@@ -119,17 +119,32 @@ def cart():
     # Get cart apps
     apps = cart_show(user_id)
     
-    # Get total price
-    #todo: get total price
-    total = cart_total_price(user_id)
-    if total == -1:
-        return "Error happened while calculating total price"
+    if apps:
+        # Get total price
+        total = cart_total_price(user_id)
+        if total == -1:
+            return "Error happened while calculating total price"
+        
+        # Get user balance
+        balance = user_balance(user_id)
     
-    # Get user balance
-    balance = user_balance(user_id)
-    
-    return render_template('cart.html', cart_items=apps, total= total, user_balance=balance)
+        return render_template('cart.html', cart_items=apps, total= total, user_balance=balance)
 
+    return render_template('cart.html')
+
+
+@app.route('/confirm_purchase', methods=['POST'])
+def confirm_purchase():
+    if ('user_type' not in session) or session['user_type'] != 'user':
+        return redirect(url_for('login'))
+    
+    user_id = session['id']
+    output = cart_checkout(user_id)
+    
+    if output == 1:
+        return {'success': False, 'error': 'No Enough Balance, You are poor'}
+    elif output == 0:
+        return {'success': True, 'message': 'Purchase successful'}
 
 
 
@@ -273,7 +288,7 @@ def add_to_cart():
         user_id = session['id']
         output = cart_add_app(user_id, app_id)
         if output == 1:
-            return {'success': False, 'error': 'App already exists in the cart'}
+            return {'success': False, 'error': 'App is already in the cart'}
         elif output == 0:
             return {'success': True}
         else:
@@ -282,6 +297,22 @@ def add_to_cart():
     except Exception as e:
         print(e)
         return {'success': False, 'error': 'Unknown error occurred'}
+
+@app.route('/remove_from_cart', methods=['POST'])
+def remove_from_cart():
+    try:
+        app_id = int( request.json.get('app_id') )
+        user_id = session['id']
+        output = cart_remove_app(user_id, app_id)
+        if output == 1:
+            return {'success': False, 'error': 'Unknown error occurred'}
+        elif output == 0:
+            return {'success': True}
+        
+    except Exception as e:
+        print(e)
+        return {'success': False, 'error': 'Unknown error occurred'}
+
 
 
 if __name__ == '__main__':
