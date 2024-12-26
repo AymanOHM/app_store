@@ -6,7 +6,9 @@
 <div class="container mt-5">
     <form action="{{ url_for('user_home') }}" method="post" class="mb-4">
         <div class="input-group">
-            <input type="text" class="form-control" name="search" placeholder="Search apps...">
+            <input type="text" class="form-control" name="search" placeholder="Search apps..."
+            {% if search_term %}value = "{{ search_term }}"{% endif %}
+            required>
             <div class="input-group-append">
                 <button class="btn btn-primary" type="submit">Search</button>
             </div>
