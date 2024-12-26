@@ -18,6 +18,12 @@
     </div>
     <div id="form-container">
     </div>
+    {% if error %}
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+    {% endif %}
+    {% if success %}
+    <div class="alert alert-success mt-3">{{ success }}</div>
+    {% endif %}
 </div>
 
 <script>

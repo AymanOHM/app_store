@@ -13,7 +13,7 @@
                     <p class="card-text">Version: {{ app.app_version }}</p>
                     <p class="card-text">Price: ${{ app.price }}</p>
                     <p class="card-text">Description: {{ app.app_description }}</p>
-                    <p class="card-text">Developer: {{ app.dev_name }}</p>
+                    <p class="card-text">Developer: {{ developer.name }}</p>
                     <button onclick="addToCart('{{ app.app_id }}')" class="btn btn-success btn-lg">Add to Cart</button>
                 </div>
             </div>
@@ -48,7 +48,7 @@ function addToCart(appId) {
         if (data.success) {
             alert('Added to cart!');
         } else {
-            alert('Error adding to cart');
+            alert(data.error);
         }
     });
 }

@@ -12,7 +12,7 @@ def add_app(form):
         dev_id = form['dev_id']
         app_path = form['app_path']
         icon_path = form['icon_path']
-        query = f"exec AddApp '{name}', {app_version}, '{category}', {price}, '{app_description}', {dev_id}, '{app_path}', '{icon_path}'"
+        query = f"exec AddApp '{name}', {app_version}, '{category}', {price if price else 0}, '{app_description}', {dev_id}, '{app_path}', '{icon_path}'"
         cursor.execute(query)
         cursor.commit()
         conn.close()
