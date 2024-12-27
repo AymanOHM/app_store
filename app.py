@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from methods import search_app, search_cat, search_dev, search_user
-from methods import add_app, add_category, add_dev, add_user
-from methods import delete_app, delete_category, delete_dev, delete_user
-from methods import update_app, update_category, update_dev, update_user
-from methods import get_user_id, get_dev_id, user_signup, dev_signup
-from methods import dev_add_app, dev_update_app, dev_delete_app, dev_show_apps
+from methods.search import search_app, search_cat, search_dev, search_user
+from methods.add import add_app, add_category, add_dev, add_user
+from methods.delete import delete_app, delete_category, delete_dev, delete_user
+from methods.update import update_app, update_category, update_dev, update_user
+from methods.auth import get_user_id, get_dev_id, user_signup, dev_signup
+from methods.devmethods import dev_add_app, dev_update_app, dev_delete_app, dev_show_apps
 from methods.user_methods import user_search_app_with_cat, user_balance
-from methods.viewapp_methods import app_get, app_get_developer
+from methods.viewapp_methods import app_get, app_get_developer, app_get_reviews
 from methods.cart_methods import cart_add_app, cart_remove_app, cart_show, cart_total_price, cart_checkout
 from random import choices
 
@@ -31,11 +31,16 @@ def crud():
                 'developer': search_dev,
                 'user': search_user,
             }
-            search_term = request.form['search']
-            results = search[entity](search_term)
-            message = f"Results for {entity.capitalize()} with '{search_term}':" if results else f"No results for {
-                entity.capitalize()} with '{search_term}'"
-            return render_template('crud.html', message=message, results=results, entity=entity)
+            
+            try:
+                search_term = request.form['search']
+                results = search[entity](search_term)
+                
+                message = f"Results for {entity.capitalize()} with '{search_term}':" if results else f"No results for {
+                    entity.capitalize()} with '{search_term}'"
+                return render_template('crud.html', message=message, results=results, entity= entity, categories = search_cat(''))
+            except Exception as e:
+                return render_template('crud.html', message=f"Error when searching for {entity.capitalize()}:\n {e}", categories = search_cat(''))
 
         elif operation == 'add':
             adder = {
@@ -46,9 +51,9 @@ def crud():
             }
             message = adder[entity](request.form)
 
-            return render_template('crud.html', message=message)
+            return render_template('crud.html', message=message, categories = search_cat(''))
 
-    return render_template('crud.html')
+    return render_template('crud.html', categories = search_cat(''))
 
 @app.route('/user_home', methods=['GET', 'POST'])
 def user_home():
@@ -65,7 +70,6 @@ def user_home():
         
     apps = user_search_app_with_cat()
     apps = choices(apps, k=9) if len(apps) > 9 else apps
-    print(apps)
     return render_template('user_home.html', categories= categories, apps= apps)
 
 @app.route('/dev_home', methods=['GET'])
@@ -82,7 +86,9 @@ def dev_home():
 def view_app(app_id):
     app = app_get(app_id)
     developer = app_get_developer(app_id)
-    return render_template('view_app.html', app=app, developer= developer)
+    reviews = app_get_reviews(app_id)
+    
+    return render_template('view_app.html', app=app, developer= developer, reviews= reviews)
 
 
 @app.route('/delete/<entity>/<id>', methods=['GET'])
@@ -287,7 +293,9 @@ def add_to_cart():
         app_id = int( request.json.get('app_id') )
         user_id = session['id']
         output = cart_add_app(user_id, app_id)
-        if output == 1:
+        if output == 2:
+            return {'success': False, 'error': 'You already own this app'}
+        elif output == 1:
             return {'success': False, 'error': 'App is already in the cart'}
         elif output == 0:
             return {'success': True}

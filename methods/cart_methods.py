@@ -35,7 +35,6 @@ def cart_total_price(user_id):
     EXEC GetTransactionTotalPrice {user_id}, @ReturnValue OUTPUT ;\
     SELECT @ReturnValue;"
     cursor.execute(query)
-    print(query)
     total = cursor.fetchone()[0]
 
     conn.close()

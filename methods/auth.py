@@ -17,7 +17,6 @@ def get_user_id(form):
     return user_id
 
 def get_dev_id(form):
-    # todo: check form input names
     username = form['name']
     password = form['password']
 

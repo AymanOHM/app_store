@@ -14,6 +14,7 @@
                     <p class="card-text">Price: ${{ app.price }}</p>
                     <p class="card-text">Description: {{ app.app_description }}</p>
                     <p class="card-text">Developer: {{ developer.name }}</p>
+                    <p class="card-text">Downloads: {{ app.downloads }}</p>
                     <button onclick="addToCart('{{ app.app_id }}')" class="btn btn-success btn-lg">Add to Cart</button>
                 </div>
             </div>
@@ -24,7 +25,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Rating: {{ review.rating }}/5</h5>
                     <p class="card-text">{{ review.review_text }}</p>
-                    <p class="card-text"><small class="text-muted">By {{ review.user_name }} on {{ review.review_date }}</small></p>
+                    <p class="card-text"><small class="text-muted">By {{ review.name }} on {{ review.review_date }}</small></p>
                 </div>
             </div>
             {% endfor %}

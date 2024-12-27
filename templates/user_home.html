@@ -8,7 +8,7 @@
         <div class="input-group">
             <input type="text" class="form-control" name="search" placeholder="Search apps..."
             {% if search_term %}value = "{{ search_term }}"{% endif %}
-            required>
+            >
             <div class="input-group-append">
                 <button class="btn btn-primary" type="submit">Search</button>
             </div>
@@ -33,6 +33,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ app.name }}</h5>
                     <p class="card-text">${{ app.price }}</p>
+                    <p class="card-text">Downloads: {{ app.downloads }}</p>
                     <a href="{{ url_for('view_app', app_id=app.app_id) }}" class="btn btn-primary">View Details</a>
                     <button onclick="addToCart('{{ app.app_id }}')" class="btn btn-success">Add to Cart</button>
                 </div>
