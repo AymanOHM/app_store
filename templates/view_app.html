@@ -18,8 +18,30 @@
                     <button onclick="addToCart('{{ app.app_id }}')" class="btn btn-success btn-lg">Add to Cart</button>
                 </div>
             </div>
-
             <h2 class="mt-4">Reviews</h2>
+            {% if user_own %}
+            <form method="post" action="{{ url_for('add_review') }}">
+                <div class="form-group">
+                    <label for="rating">Rating</label>
+                    <select class="form-control" id="rating" name="rating" required>
+                        <option value="">Select a rating</option>
+                        <option value="1">1 - Very Poor</option>
+                        <option value="2">2 - Poor</option>
+                        <option value="3">3 - Average</option>
+                        <option value="4">4 - Good</option>
+                        <option value="5">5 - Excellent</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="review_text">Review</label>
+                    <textarea class="form-control" id="review_text" name="review_text" rows="3" required></textarea>
+                    <input type="hidden" name="app_id" value="{{ app.app_id }}">
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </div>
+            </form>
+            {% else %}
+            <p>Buy this app to be able to review.</p>
+            {% endif %}
             {% for review in reviews %}
             <div class="card mb-3">
                 <div class="card-body">

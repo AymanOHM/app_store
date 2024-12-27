@@ -5,7 +5,7 @@ from methods.delete import delete_app, delete_category, delete_dev, delete_user
 from methods.update import update_app, update_category, update_dev, update_user
 from methods.auth import get_user_id, get_dev_id, user_signup, dev_signup
 from methods.devmethods import dev_add_app, dev_update_app, dev_delete_app, dev_show_apps
-from methods.user_methods import user_search_app_with_cat, user_balance
+from methods.user_methods import user_add_review, user_check_own, user_search_app_with_cat, user_balance
 from methods.viewapp_methods import app_get, app_get_developer, app_get_reviews
 from methods.cart_methods import cart_add_app, cart_remove_app, cart_show, cart_total_price, cart_checkout
 from random import choices
@@ -87,8 +87,9 @@ def view_app(app_id):
     app = app_get(app_id)
     developer = app_get_developer(app_id)
     reviews = app_get_reviews(app_id)
+    user_own = user_check_own(app_id)
     
-    return render_template('view_app.html', app=app, developer= developer, reviews= reviews)
+    return render_template('view_app.html', app=app, developer= developer, reviews= reviews, user_own= user_own)
 
 
 @app.route('/delete/<entity>/<id>', methods=['GET'])
@@ -321,6 +322,17 @@ def remove_from_cart():
         print(e)
         return {'success': False, 'error': 'Unknown error occurred'}
 
+@app.route('/add_review', methods=['POST'])
+def add_review():
+    try:
+        app_id = int( request.form['app_id'] )
+        rating = int( request.form['rating'] )
+        review = request.form['review_text']
+        user_add_review(app_id, rating, review)
+        
+        return redirect(url_for('view_app', app_id=app_id))
+    except Exception as e:
+        return f"Error occurred, couldn't add review:\n{e}"
 
 
 if __name__ == '__main__':
