@@ -1,13 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from methods import search_app, search_cat, search_dev, search_user
-from methods import add_app, add_category, add_dev, add_user
-from methods import delete_app, delete_category, delete_dev, delete_user
-from methods import update_app, update_category, update_dev, update_user
-from methods import get_user_id, get_dev_id, user_signup, dev_signup
-from methods import dev_add_app, dev_update_app, dev_delete_app, dev_show_apps
-from methods.user_methods import user_search_app_with_cat, user_balance
-from methods.viewapp_methods import app_get, app_get_developer
-from methods.cart_methods import cart_add_app, cart_show, cart_total_price
+from methods.search import search_app, search_cat, search_dev, search_user
+from methods.add import add_app, add_category, add_dev, add_user
+from methods.delete import delete_app, delete_category, delete_dev, delete_user
+from methods.update import update_app, update_category, update_dev, update_user
+from methods.auth import get_user_id, get_dev_id, user_signup, dev_signup
+from methods.devmethods import dev_add_app, dev_update_app, dev_delete_app, dev_show_apps
+from methods.user_methods import user_add_review, user_check_own, user_search_app_with_cat, user_balance
+from methods.viewapp_methods import app_get, app_get_developer, app_get_reviews
+from methods.cart_methods import cart_add_app, cart_remove_app, cart_show, cart_total_price, cart_checkout
 from random import choices
 
 app = Flask(__name__)
@@ -31,11 +31,16 @@ def crud():
                 'developer': search_dev,
                 'user': search_user,
             }
-            search_term = request.form['search']
-            results = search[entity](search_term)
-            message = f"Results for {entity.capitalize()} with '{search_term}':" if results else f"No results for {
-                entity.capitalize()} with '{search_term}'"
-            return render_template('crud.html', message=message, results=results, entity=entity)
+            
+            try:
+                search_term = request.form['search']
+                results = search[entity](search_term)
+                
+                message = f"Results for {entity.capitalize()} with '{search_term}':" if results else f"No results for {
+                    entity.capitalize()} with '{search_term}'"
+                return render_template('crud.html', message=message, results=results, entity= entity, categories = search_cat(''))
+            except Exception as e:
+                return render_template('crud.html', message=f"Error when searching for {entity.capitalize()}:\n {e}", categories = search_cat(''))
 
         elif operation == 'add':
             adder = {
@@ -46,9 +51,9 @@ def crud():
             }
             message = adder[entity](request.form)
 
-            return render_template('crud.html', message=message)
+            return render_template('crud.html', message=message, categories = search_cat(''))
 
-    return render_template('crud.html')
+    return render_template('crud.html', categories = search_cat(''))
 
 @app.route('/user_home', methods=['GET', 'POST'])
 def user_home():
@@ -65,7 +70,6 @@ def user_home():
         
     apps = user_search_app_with_cat()
     apps = choices(apps, k=9) if len(apps) > 9 else apps
-    print(apps)
     return render_template('user_home.html', categories= categories, apps= apps)
 
 @app.route('/dev_home', methods=['GET'])
@@ -82,7 +86,10 @@ def dev_home():
 def view_app(app_id):
     app = app_get(app_id)
     developer = app_get_developer(app_id)
-    return render_template('view_app.html', app=app, developer= developer)
+    reviews = app_get_reviews(app_id)
+    user_own = user_check_own(app_id)
+    
+    return render_template('view_app.html', app=app, developer= developer, reviews= reviews, user_own= user_own)
 
 
 @app.route('/delete/<entity>/<id>', methods=['GET'])
@@ -119,17 +126,32 @@ def cart():
     # Get cart apps
     apps = cart_show(user_id)
     
-    # Get total price
-    #todo: get total price
-    total = cart_total_price(user_id)
-    if total == -1:
-        return "Error happened while calculating total price"
+    if apps:
+        # Get total price
+        total = cart_total_price(user_id)
+        if total == -1:
+            return "Error happened while calculating total price"
+        
+        # Get user balance
+        balance = user_balance(user_id)
     
-    # Get user balance
-    balance = user_balance(user_id)
-    
-    return render_template('cart.html', cart_items=apps, total= total, user_balance=balance)
+        return render_template('cart.html', cart_items=apps, total= total, user_balance=balance)
 
+    return render_template('cart.html')
+
+
+@app.route('/confirm_purchase', methods=['POST'])
+def confirm_purchase():
+    if ('user_type' not in session) or session['user_type'] != 'user':
+        return redirect(url_for('login'))
+    
+    user_id = session['id']
+    output = cart_checkout(user_id)
+    
+    if output == 1:
+        return {'success': False, 'error': 'No Enough Balance, You are poor'}
+    elif output == 0:
+        return {'success': True, 'message': 'Purchase successful'}
 
 
 
@@ -272,8 +294,10 @@ def add_to_cart():
         app_id = int( request.json.get('app_id') )
         user_id = session['id']
         output = cart_add_app(user_id, app_id)
-        if output == 1:
-            return {'success': False, 'error': 'App already exists in the cart'}
+        if output == 2:
+            return {'success': False, 'error': 'You already own this app'}
+        elif output == 1:
+            return {'success': False, 'error': 'App is already in the cart'}
         elif output == 0:
             return {'success': True}
         else:
@@ -282,6 +306,33 @@ def add_to_cart():
     except Exception as e:
         print(e)
         return {'success': False, 'error': 'Unknown error occurred'}
+
+@app.route('/remove_from_cart', methods=['POST'])
+def remove_from_cart():
+    try:
+        app_id = int( request.json.get('app_id') )
+        user_id = session['id']
+        output = cart_remove_app(user_id, app_id)
+        if output == 1:
+            return {'success': False, 'error': 'Unknown error occurred'}
+        elif output == 0:
+            return {'success': True}
+        
+    except Exception as e:
+        print(e)
+        return {'success': False, 'error': 'Unknown error occurred'}
+
+@app.route('/add_review', methods=['POST'])
+def add_review():
+    try:
+        app_id = int( request.form['app_id'] )
+        rating = int( request.form['rating'] )
+        review = request.form['review_text']
+        user_add_review(app_id, rating, review)
+        
+        return redirect(url_for('view_app', app_id=app_id))
+    except Exception as e:
+        return f"Error occurred, couldn't add review:\n{e}"
 
 
 if __name__ == '__main__':

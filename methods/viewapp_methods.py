@@ -22,3 +22,14 @@ def app_get_developer(app_id):
     dev_id = cursor.fetchone()
     conn.close()
     return dev_id
+
+def app_get_reviews(app_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = f"DECLARE @ReturnValue INT;\
+    EXEC @ReturnValue = showAppReviews {app_id};\
+    SELECT @ReturnValue;"
+    cursor.execute(query)
+    reviews = cursor.fetchall()
+    conn.close()
+    return reviews

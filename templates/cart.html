@@ -54,7 +54,7 @@ function removeFromCart(appId) {
         if (data.success) {
             location.reload();
         } else {
-            alert('Error removing from cart');
+            alert(data.error);
         }
     });
 }
@@ -70,9 +70,10 @@ function confirmPurchase() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                alert(data.message);
                 window.location.href = '/user_home';
             } else {
-                alert('Error completing purchase');
+                alert(data.error);
             }
         });
     }

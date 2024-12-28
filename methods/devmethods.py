@@ -49,10 +49,11 @@ def dev_update_app(app_id, form):
     return output
 
 def dev_delete_app(app_id):
+    dev_id = session['id']
     conn = get_db_connection()
     cursor = conn.cursor()
     query = f"DECLARE @ReturnValue INT;\
-    EXEC @ReturnValue = DevDeleteApp {app_id};\
+    EXEC @ReturnValue = DevDeleteApp {app_id}, {dev_id};\
     SELECT @ReturnValue;"
     
     cursor.execute(query)
