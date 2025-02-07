@@ -6,8 +6,8 @@ The project is built using Flask for the backend and Microsoft SQL Server for th
 ## Database Initialization
 
 To initialize the database, execute the SQL code in [`sql_initialization`](sql_initialization/) directory using Microsoft SQL Server in the order:
-1. [`DDL.query`](query_initialization/DDL.query) : To create Database and Tables
-2. [`DML.query`](sql_initialization/DML.sql) :
+1. [`DDL.sql`](sql_initialization/DDL.sql) : To create Database and Tables
+2. [`DML.sql`](sql_initialization/DML.sql) :
    1. To fill the tables with some data (Optional)
    2. To create the stored procedures needed (Mandatory)
 
