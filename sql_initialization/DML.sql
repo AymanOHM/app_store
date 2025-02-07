@@ -79,9 +79,9 @@ INSERT INTO apps_trans (trans_id, app_id) VALUES
 
 
 /*=============================or you can use the procedures========================================*/
+GO
 DECLARE @UserSignUpResult INT;
 
-GO
 EXEC @UserSignUpResult = UserSignUp 'JohnDoe', 'johndoe@example.com', 'password123', 'VISA-1234', 100.00;
 EXEC @UserSignUpResult = UserSignUp 'JaneSmith', 'janesmith@example.com', 'password456', 'MASTERCARD-5678', 200.50;
 EXEC @UserSignUpResult = UserSignUp 'AliceBrown', 'alicebrown@example.com', 'password789', NULL, 50.00;
@@ -94,9 +94,9 @@ EXEC @UserSignUpResult = UserSignUp 'GraceKelly', 'gracekelly@example.com', 'myp
 EXEC @UserSignUpResult = UserSignUp 'HannahLee', 'hannahlee@example.com', 'strongpassword', 'BITCOIN-7890', 100.00;
 
 
+GO
 DECLARE @DevSignUpResult INT;
 
-GO
 EXEC @DevSignUpResult = DevSignUp 'DevOne', 'dev1@example.com', 'devpass1', '123-456-7890', 'http://devone.com';
 EXEC @DevSignUpResult = DevSignUp 'DevTwo', 'dev2@example.com', 'devpass2', '234-567-8901', 'http://devtwo.com';
 EXEC @DevSignUpResult = DevSignUp 'DevThree', 'dev3@example.com', 'devpass3', '345-678-9012', 'http://devthree.com';
@@ -124,9 +124,9 @@ INSERT INTO categories (cat_name, cat_description) VALUES
 ('Utilities', 'Useful everyday tools');
 
 
+GO
 DECLARE @DevAddAppResult INT;
 
-GO
 EXEC @DevAddAppResult = DevAddApp 'GameOne', 'Games', 1.0, 15.00, 'Exciting action game', 1, 'path/to/gameone', 'path/to/icongameone';
 EXEC @DevAddAppResult = DevAddApp 'GameTwo', 'Games', 1.1, 20.00, 'Adventure game', 2, 'path/to/gametwo', 'path/to/icongametwo';
 EXEC @DevAddAppResult = DevAddApp 'PhotoEditor', 'Photography', 2.0, 25.00, 'Advanced photo editing tool', 3, 'path/to/photoeditor', 'path/to/iconphotoeditor';

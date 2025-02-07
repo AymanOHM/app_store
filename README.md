@@ -34,9 +34,11 @@ To initialize the database, execute the SQL code in [`sql_initialization`](sql_i
     ```
 3. Initialize the database by executing the provided SQL code in Microsoft SQL Server.
 
-4. Run [`app.py`](app.py)
+4. Modify contents of `get_db_connection' function in [methods/database.py](methods/database.py) with your database credentials.
 
-5. Access the website using: [`https://127.0.0.1:5000`](https://127.0.0.1:5000)
+5. Run [`app.py`](app.py)
+
+6. Access the website using: [`https://127.0.0.1:5000`](https://127.0.0.1:5000)
 
 ## Usage
 
